@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import LeaveModal from "./LeaveModal"; // Import the modal component
-import { apiUrl, partnerData } from "../utils/common"; // Ensure this is correctly imported
 import GetLeaves from "./GetLeaves"; // Import GetLeaves component
+import { apiUrl, partnerData } from "../utils/common";
 
-const Leave = () => {
+const Leave = ({ existingLeaves, onRefresh }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     userId: 0,
@@ -18,25 +18,7 @@ const Leave = () => {
   });
   const [loading, setLoading] = useState(false);
   const [availableSlots, setAvailableSlots] = useState([]);
-  const [existingLeaves, setExistingLeaves] = useState([]); // Initialize state for existing leaves
-  const [refreshKey, setRefreshKey] = useState(0); // Key to trigger refresh
   const today = new Date().toISOString().split("T")[0];
-
-  useEffect(() => {
-    // Fetch existing leaves from the server or another source
-    const fetchExistingLeaves = async () => {
-      try {
-        const response = await axios.get(
-          `${apiUrl}/getLeaves`
-        );
-        setExistingLeaves(response.data); // Set the fetched leaves
-      } catch (error) {
-        console.error("Error fetching existing leaves:", error);
-      }
-    };
-
-    fetchExistingLeaves();
-  }, [refreshKey]); // Empty dependency array means this runs only once on mount
 
   const handleOpen = () => setIsModalOpen(true);
 
@@ -125,7 +107,7 @@ const Leave = () => {
         endDate,
         slot,
       });
-      setRefreshKey((prevKey) => prevKey + 1); // Trigger re-render
+      onRefresh(); // Trigger re-render in parent component
       alert("Leave request submitted successfully!");
     } catch (error) {
       console.error("Error submitting leave request:", error);
@@ -158,11 +140,10 @@ const Leave = () => {
         onSubmit={handleSubmit}
         today={today}
         loading={loading}
-        existingLeaves={existingLeaves} // Pass the existing leaves
       />
       <div>
         <h2 className="text-2xl text-center font-bold uppercase">Leaves</h2>
-        <GetLeaves />{" "}
+        <GetLeaves existingLeaves={existingLeaves} onRefresh={onRefresh} />
       </div>
     </>
   );
