@@ -26,7 +26,7 @@ const GetLeaves = () => {
   useEffect(() => {
     const fetchLeaves = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getLeaves");
+        const response = await axios.get("https://leave-app-backend-tqdr.onrender.com/api/getLeaves");
         setLeaves(response.data);
       } catch (error) {
         console.error("Error fetching leaves:", error);
@@ -37,7 +37,7 @@ const GetLeaves = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/removeLeave/${deleteId}`);
+      await axios.delete(`https://leave-app-backend-tqdr.onrender.com/api/removeLeave/${deleteId}`);
       setRefresh(!refresh); // Trigger refresh
       setIsModalOpen(false);
     } catch (error) {
@@ -47,7 +47,7 @@ const GetLeaves = () => {
 
   const handleSaveStatus = async ({ status, startDate, endDate }) => {
     try {
-      await axios.put(`http://localhost:5000/api/updateLeave/${editId}`, {
+      await axios.put(`https://leave-app-backend-tqdr.onrender.com/api/updateLeave/${editId}`, {
         status,
         startDate,
         endDate,
@@ -61,7 +61,7 @@ const GetLeaves = () => {
 
   const handleAddLeave = async (newLeave) => {
     try {
-      await axios.post("http://localhost:5000/api/addLeave", newLeave);
+      await axios.post("https://leave-app-backend-tqdr.onrender.com/api/addLeave", newLeave);
       setRefresh(!refresh); // Trigger refresh
     } catch (error) {
       console.error("Error adding leave:", error);
