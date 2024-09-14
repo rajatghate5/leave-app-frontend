@@ -1,4 +1,4 @@
-const seedPartnerData = [
+export const partnerData = [
   {
     id: 1,
     name: "John Doe",
@@ -85,4 +85,17 @@ const seedPartnerData = [
   },
 ];
 
-export default seedPartnerData;
+export const table = [
+  "User ID",
+  "Name",
+  "City",
+  "Reason",
+  "Apply Date",
+  "Start Date",
+  "End Date",
+  "Slots",
+  "Status",
+  "Actions",
+];
+
+export const apiUrl = "https://leave-app-backend-tqdr.onrender.com/api";

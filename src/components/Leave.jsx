@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import LeaveModal from "./LeaveModal"; // Import the modal component
-import partnerData from "../utils/common"; // Ensure this is correctly imported
+import { apiUrl, partnerData } from "../utils/common"; // Ensure this is correctly imported
 import GetLeaves from "./GetLeaves"; // Import GetLeaves component
 
 const Leave = () => {
@@ -19,14 +19,16 @@ const Leave = () => {
   const [loading, setLoading] = useState(false);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [existingLeaves, setExistingLeaves] = useState([]); // Initialize state for existing leaves
-
+  const [refreshKey, setRefreshKey] = useState(0); // Key to trigger refresh
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     // Fetch existing leaves from the server or another source
     const fetchExistingLeaves = async () => {
       try {
-        const response = await axios.get("https://leave-app-backend-tqdr.onrender.com/api/getLeaves");
+        const response = await axios.get(
+          `${apiUrl}/getLeaves`
+        );
         setExistingLeaves(response.data); // Set the fetched leaves
       } catch (error) {
         console.error("Error fetching existing leaves:", error);
@@ -34,7 +36,7 @@ const Leave = () => {
     };
 
     fetchExistingLeaves();
-  }, []); // Empty dependency array means this runs only once on mount
+  }, [refreshKey]); // Empty dependency array means this runs only once on mount
 
   const handleOpen = () => setIsModalOpen(true);
 
@@ -114,7 +116,7 @@ const Leave = () => {
     }
     setLoading(true);
     try {
-      await axios.post("https://leave-app-backend-tqdr.onrender.com/api/addLeave", {
+      await axios.post(`${apiUrl}/addLeave`, {
         userId,
         name,
         city,
@@ -123,8 +125,8 @@ const Leave = () => {
         endDate,
         slot,
       });
+      setRefreshKey((prevKey) => prevKey + 1); // Trigger re-render
       alert("Leave request submitted successfully!");
-      // setRefreshKey((prevKey) => prevKey + 1); // Trigger re-render
     } catch (error) {
       console.error("Error submitting leave request:", error);
       alert("Failed to submit leave request. Please try again.");
@@ -138,7 +140,7 @@ const Leave = () => {
     <>
       <div className="w-11/12 py-4 flex justify-end">
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={handleOpen}
           sx={{ mr: 2 }}
