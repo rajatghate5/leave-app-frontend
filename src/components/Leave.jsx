@@ -114,7 +114,7 @@ const Leave = () => {
     }
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/addLeave", {
+      await axios.post("https://leave-app-backend-tqdr.onrender.com/api/addLeave", {
         userId,
         name,
         city,
